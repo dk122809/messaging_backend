@@ -6,8 +6,16 @@ import teamRoute from "../routes/v1/team";
 import threadRoute from "../routes/v1/thread";
 import apiResponseHandler from "../utils/apiResponse";
 import isAuthorized from "../middlewares/auth";
+import busboy from "connect-busboy";
+import fs from "fs-extra";
+import path from "path";
 
 const app = express();
+
+// add busboy middleware
+app.use(busboy({
+    highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+})); 
 
 // parse body params and attache them to req.body
 app.use(express.json());
@@ -19,6 +27,8 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
+const uploadPath = path.join(__dirname, '../../upload'); 
+fs.ensureDir(uploadPath);
 
 // routes
 app.use('/v1/auth', authRoute);

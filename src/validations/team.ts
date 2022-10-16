@@ -5,7 +5,7 @@ const teamCreate = Joi.object({
 });
 
 const teamJoin = Joi.object({
-  teamId: Joi.string().required(),
+  teamId: Joi.string().required(),  
 });
 
 

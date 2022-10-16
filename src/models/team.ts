@@ -17,6 +17,9 @@ const teamSchema: Schema = new Schema(
       trim: true,
       required: true,
     },
+    image: {
+      type: String,
+    },
     team_lead: { type: "ObjectId", ref: "User" },
     member: [{ type: "ObjectId", ref: "User" }],
   },
