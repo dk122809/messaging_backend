@@ -1,5 +1,5 @@
 import express from "express";
-import { create, find, join } from "../../controllers/team";
+import { create, find, join, joinedTeam } from "../../controllers/team";
 import requestValidator from "../../middlewares/requestValidation";
 import { teamCreate, teamJoin } from "../../validations/team";
 
@@ -70,5 +70,25 @@ router
    * @apiError (Bad Request 400) {Object}  data  empty array
    */
   .get(find);
+
+/**
+ * @api {get} team/joinedTeam get user joined team
+ * @apiHeader {String} Authorization bearer bd970a05-0ec1-4412-8b28-657962f0f778
+ * @apiDescription find all joined team
+ * @apiVersion 1.0.0
+ * @apiName FindJoinedTeam
+ * @apiGroup Team
+ * @apiPermission public
+ *
+ * @apiSuccess (Ok 200) {Boolean}  status     response status
+ * @apiSuccess (Ok 200) {String}  message   response message
+ * @apiSuccess (Ok 200) {Object}  data    all team details
+ *
+ * @apiError (Bad Request 400) {Boolean}  status  response status
+ * @apiError (Bad Request 400) {String}  message  response message
+ * @apiError (Bad Request 400) {Object}  error  errors in json
+ * @apiError (Bad Request 400) {Object}  data  empty array
+ */
+router.get("/joinedTeam", joinedTeam);
 
 export default router;

@@ -20,7 +20,7 @@ const create = async function (req, res, next) {
       team_lead: id,
       member: [id],
     };
-    const team = await (await Team.create(data)).populate("member", "name");
+    const team = await (await Team.create(data)).populate("member team_lead", "name");
     return next({
       statusCode: httpStatus.CREATED,
       status: true,
@@ -48,7 +48,7 @@ const create = async function (req, res, next) {
 const find = async function (req, res, next) {
   try {
     const teams = await Team.find()
-      .populate("member", "name")
+      .populate("member team_lead", "name")
       .select("name createdAt updatedAt team_lead");
     return next({
       statusCode: httpStatus.OK,
@@ -67,7 +67,7 @@ const find = async function (req, res, next) {
 };
 
 /**
- * find all team and returns teams detail
+ * join team and returns teams detail
  * @public
  */
 const join = async function (req, res, next) {
@@ -84,7 +84,7 @@ const join = async function (req, res, next) {
     foundTeam.member.push(id);
     await foundTeam.save();
     const updatedTeam = await Team.findById(req.body.teamId)
-      .populate("member", "name")
+      .populate("member team_lead", "name")
       .select("name createdAt updatedAt team_lead");
     return next({
       statusCode: httpStatus.OK,
@@ -102,4 +102,34 @@ const join = async function (req, res, next) {
   }
 };
 
-export { create, find, join };
+/**
+ * get user joined team and returns teams detail
+ * @public
+ */
+const joinedTeam = async function (req, res, next) {
+  try {
+    const { id } = req.userData;
+    const teams = await Team.find({
+      member: {
+        $in: [id],
+      },
+    })
+      .populate("member team_lead", "name")
+      .select("name createdAt updatedAt team_lead");
+    return next({
+      statusCode: httpStatus.OK,
+      status: true,
+      message: founddSuccess("Teams"),
+      data: teams,
+    });
+  } catch (err) {
+    let payload = {
+      statusCode: httpStatus.BAD_REQUEST,
+      status: false,
+      message: err.message,
+    };
+    return next(payload);
+  }
+};
+
+export { create, find, join, joinedTeam };
